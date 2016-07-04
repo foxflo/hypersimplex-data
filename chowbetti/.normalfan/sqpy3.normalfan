@@ -1,0 +1,30 @@
+_application fan
+_version 2.2
+_type SymmetricFan
+
+AMBIENT_DIM
+3
+
+LINEALITY_DIM
+0
+
+RAYS
+1 0 -1
+0 1 -1
+-1 0 -1
+0 -1 -1
+0 0 1
+
+N_RAYS
+5
+
+LINEALITY_SPACE
+
+
+MAXIMAL_CONES
+{0 1 4}
+{1 2 4}
+{0 3 4}
+{2 3 4}
+{0 1 2 3}
+
