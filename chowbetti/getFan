@@ -1,0 +1,13 @@
+use application "polytope";
+
+my $p=load($ARGV[-1]);
+
+use application "fan";
+
+my $f = normal_fan($p);
+$f->AMBIENT_DIM;
+$f->LINEALITY_DIM;
+$f->N_RAYS;
+$f->CONES;
+
+save($f,$ARGV[-1]);
