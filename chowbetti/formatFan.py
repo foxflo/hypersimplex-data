@@ -1,6 +1,7 @@
 import os
 import sys
 import xmltodict
+from fractions import Fraction
 
 def extractData(fan_property):
     nums = set(["FAN_AMBIENT_DIM","LINEALITY_DIM","N_RAYS"])
@@ -21,6 +22,28 @@ def extractData(fan_property):
         print "probably unicode set checking error"
         return ""
 
+def intRays(fanfile,outfile):
+    fan = open(fanfile,"r")
+    int_fan = open(".normalfan/"+outfile+".normalfan","w")
+    line = fan.readline()
+    while line != "RAYS\n":
+        int_fan.write(line)
+        line = fan.readline()
+    int_fan.write(line)
+    line = fan.readline()
+    while line != "\n":
+        values = map(Fraction,line.strip().split(" "))
+        lcm = reduce(lambda x,y:max(x,y),[f.denominator for f in values])
+        values = [str(value*lcm) for value in values]
+        int_fan.write(reduce(lambda x,y:str(x)+" "+str(y),values)+"\n")
+        line = fan.readline()
+    int_fan.write(line)
+    
+    rest = fan.read()
+    int_fan.write(rest)
+    int_fan.flush()
+    int_fan.close()
+    
 #polymake script won't deal with vertex input files for some reason
 fname=sys.argv[-1]
 os.system("cp "+fname+" temp")
@@ -53,5 +76,6 @@ gfanfile.flush()
 gfanfile.close()
 
 os.system("rm temp.fan")
-os.system("mv tempfile .normalfan/"+fname+".normalfan")
-os.system("gfan_chowbetti -i .normalfan/"+fname+".normalfan")
+intRays("tempfile",fname)
+os.system("rm tempfile")
+os.system("gfan _chowbetti -i .normalfan/"+fname+".normalfan")

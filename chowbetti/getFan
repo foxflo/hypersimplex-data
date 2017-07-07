@@ -2,9 +2,26 @@ use application "polytope";
 
 my $p=load($ARGV[-1]);
 
+my $q = polarize(center($p));
+
+my @vec;
+my $total;
+my $d = $q->DIM;
+
+for (my $i=0;$i<$d-1;$i++){
+	$vec[$i] = int(rand(50));
+	$total += $vec[$i];
+}
+
+$vec[$d-1]=-$total;
+
+my $v = new Vector<Rational>(@vec);
+my $r = polarize(translate($q,$v/200));
+print $r->VERTICES;
+
 use application "fan";
 
-my $f = normal_fan($p);
+my $f = normal_fan($r);
 $f->AMBIENT_DIM;
 $f->LINEALITY_DIM;
 $f->N_RAYS;

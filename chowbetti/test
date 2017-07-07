@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?pm chk="595f0c2b"?>
+
+<object name="test" type="polytope::Polytope&lt;Rational&gt;" version="3.0" xmlns="http://www.math.tu-berlin.de/polymake/#3">
+  <credit product="lrs"><![CDATA[
+Copyright by David Avis.
+http://cgm.cs.mcgill.ca/~avis/lrs.html
+]]></credit>
+  <property name="VERTICES">
+    <m>
+      <v>1 25/41 25/41 -25/41 -25/41</v>
+      <v>1 20/31 -20/31 20/31 -20/31</v>
+      <v>1 100/229 -100/229 -100/229 100/229</v>
+      <v>1 -100/171 100/171 100/171 -100/171</v>
+      <v>1 -20/49 20/49 -20/49 20/49</v>
+      <v>1 -25/59 -25/59 25/59 25/59</v>
+    </m>
+  </property>
+  <property name="FEASIBLE" value="true" />
+  <property name="LINEALITY_SPACE">
+    <m />
+  </property>
+  <property name="N_VERTICES" value="6" />
+  <property name="POINTED" value="true" />
+  <property name="FAR_FACE">
+    <v />
+  </property>
+  <property name="CONE_DIM" value="4" />
+  <property name="CONE_AMBIENT_DIM" value="5" />
+  <property name="FULL_DIM" value="false" />
+  <property name="LINEALITY_DIM" value="0" />
+  <property name="COMBINATORIAL_DIM" value="3" />
+  <property name="BOUNDED" value="true" />
+  <property name="N_FACETS" value="8" />
+  <property name="F_VECTOR">
+    <v>6 12 8</v>
+  </property>
+</object>
