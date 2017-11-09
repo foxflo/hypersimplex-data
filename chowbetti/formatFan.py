@@ -22,6 +22,11 @@ def extractData(fan_property):
         print "probably unicode set checking error"
         return ""
 
+def gcd(a,b):
+    if a == 0: return b
+    if b == 0: return a
+    return gcd(b, a % b)
+
 def intRays(fanfile,outfile):
     fan = open(fanfile,"r")
     int_fan = open(".normalfan/"+outfile+".normalfan","w")
@@ -33,7 +38,7 @@ def intRays(fanfile,outfile):
     line = fan.readline()
     while line != "\n":
         values = map(Fraction,line.strip().split(" "))
-        lcm = reduce(lambda x,y:max(x,y),[f.denominator for f in values])
+        lcm = reduce(lambda x,y:(x*y)/gcd(x,y),[f.denominator for f in values])
         values = [str(value*lcm) for value in values]
         int_fan.write(reduce(lambda x,y:str(x)+" "+str(y),values)+"\n")
         line = fan.readline()
