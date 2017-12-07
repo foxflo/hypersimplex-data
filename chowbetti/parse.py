@@ -1,20 +1,57 @@
 import os
-def parse():
-    for i in xrange(3,9):
-        f = open("chowbetti_sqpy_"+str(i)+".polynomial",'w')
-        vertices = open("sqpy"+str(i),'r').read().strip().split('\n')
-        temp = [x.split(" ")[1::] for x in vertices]
-        temp1 = [[str(int(y)+2) for y in x] for x in temp]
-        temp2 = [[chr(97+j)+x[j] for j in xrange(len(x))] for x in temp1]
-        temp3 = [reduce(lambda x,y:x+y,z) for z in temp2]
-        temp4 = reduce(lambda x,y:x+"+"+y, temp3)
-        ring = "Q["+reduce(lambda x,y:x+","+y,[chr(97+j) for j in xrange(len(temp1[0]))])+"]\n"
-        f.write(ring)
-        f.write("{"+temp4+"}")
-        
-def chowbetti():
-    for i in xrange(3,9):
-        os.system("gfan_tropicalintersection < chowbetti_sqpy_"+str(i)+".polynomial > chowbetti_sqpy_"+str(i)+".normalfan")
-        os.system("gfan_chowbetti -i chowbetti_sqpy_"+str(i)+".normalfan >>data")
+import sys
+import xmltodict
 
-chowbetti()
+def extractData(fan_property):
+    nums = set(["FAN_AMBIENT_DIM","LINEALITY_DIM","N_RAYS"])
+    if fan_property['@name'] in nums:
+        return fan_property['@value']+""
+    elif fan_property['@name'] == "RAYS":
+        return "\n".join(fan_property['m']['v'])
+    elif fan_property['@name'] == "LINEALITY_SPACE":
+        if fan_property['m'] == None:
+            return ""
+        else:
+            temp=[]
+            temp.append(fan_property['m']['v'])
+            return "\n".join(temp)
+    elif fan_property['@name'] == "MAXIMAL_CONES":
+        return "{"+"}\n{".join(fan_property['m']['v'])+"}"
+    else:
+        print "probably unicode set checking error"
+        return ""
+
+#polymake script won't deal with vertex input files for some reason
+fname=sys.argv[-1]
+os.system("cp "+fname+" temp")
+if fname[-5:]!=".poly":
+    os.system("polymake temp VERTICES > /dev/null")
+else:
+    fname = sys.argv[-1][:-5]
+os.system("polymake --script getFan temp")
+os.system("rm temp")
+
+gfanfile = open("tempfile",'w')
+#header
+gfanfile.write("_application fan\n_version 2.2\n_type SymmetricFan\n\n")
+
+gfan_properties = {'FAN_AMBIENT_DIM':'AMBIENT_DIM','LINEALITY_DIM':'LINEALITY_DIM','RAYS':'RAYS','N_RAYS':'N_RAYS','LINEALITY_SPACE':'LINEALITY_SPACE','MAXIMAL_CONES':'MAXIMAL_CONES'}
+ordered = ['FAN_AMBIENT_DIM','LINEALITY_DIM','RAYS','N_RAYS','LINEALITY_SPACE','MAXIMAL_CONES']
+properties={}
+
+#need to convert normal fan from polymake to gfan format
+fanxml = xmltodict.parse(open("temp.fan").read())
+fanxml = fanxml['object']['property']
+for prop in fanxml:
+    if prop['@name'] in gfan_properties:
+        properties[prop['@name']]=extractData(prop)
+
+for attribute in ordered:
+    gfanfile.write(gfan_properties[attribute]+"\n")
+    gfanfile.write(properties[attribute]+"\n\n")
+gfanfile.flush()
+gfanfile.close()
+
+os.system("rm temp.fan")
+os.system("mv tempfile .normalfan/"+fname+".normalfan")
+os.system("gfan_chowbetti -i .normalfan/"+fname+".normalfan")

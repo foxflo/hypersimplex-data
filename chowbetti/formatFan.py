@@ -57,7 +57,7 @@ if fname[-5:]!=".poly":
 else:
     fname = sys.argv[-1][:-5]
 os.system("polymake --script getFan temp")
-os.system("rm temp")
+#os.system("rm temp")
 
 gfanfile = open("tempfile",'w')
 #header
