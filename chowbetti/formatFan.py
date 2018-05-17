@@ -10,16 +10,14 @@ def extractData(fan_property):
     elif fan_property['@name'] == "RAYS":
         return "\n".join(fan_property['m']['v'])
     elif fan_property['@name'] == "LINEALITY_SPACE":
-        if fan_property['m'] == None:
+        try:
+            return "\n".join(fan_property['m']['v']) 
+        except KeyError:
             return ""
-        else:
-            temp=[]
-            temp.append(fan_property['m']['v'])
-            return "\n".join(temp)
     elif fan_property['@name'] == "MAXIMAL_CONES":
         return "{"+"}\n{".join(fan_property['m']['v'])+"}"
     else:
-        print "probably unicode set checking error"
+        print "error with"+fan_property['@name']
         return ""
 
 def gcd(a,b):

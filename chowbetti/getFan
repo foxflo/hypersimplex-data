@@ -24,6 +24,7 @@ use application "fan";
 my $f = face_fan($p);
 $f->AMBIENT_DIM;
 $f->LINEALITY_DIM;
+$f->LINEALITY_SPACE;
 $f->N_RAYS;
 $f->CONES;
 
